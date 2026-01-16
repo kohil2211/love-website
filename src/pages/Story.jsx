@@ -1,130 +1,102 @@
-import { useParams, Link, useNavigate } from "react-router-dom"
+import { useParams, useNavigate, Link } from "react-router-dom"
 import stories from "../data/stories"
 
 export default function Story() {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  const currentIndex = stories.findIndex((s) => s.id === id)
-  const story = stories[currentIndex]
+  const index = stories.findIndex(s => s.id === id)
+  const story = stories[index]
 
   if (!story) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Story not found</p>
+      <div className="h-screen flex items-center justify-center font-serif">
+        Story not found
       </div>
     )
   }
 
-  const prevStory = currentIndex > 0 ? stories[currentIndex - 1] : null
-  const nextStory =
-    currentIndex < stories.length - 1
-      ? stories[currentIndex + 1]
-      : null
+  // 🔁 CIRCULAR NAVIGATION
+  const total = stories.length
+  const prevIndex = (index - 1 + total) % total
+  const nextIndex = (index + 1) % total
+
+  const prevStory = stories[prevIndex]
+  const nextStory = stories[nextIndex]
 
   return (
-    
-    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-pink-300 to-pink-400 px-6 py-12">
-      {/* Back */}
-      <Link
-        to="/"
-        className="inline-block mb-8 text-sm text-gray-800 hover:underline"
-      >
-        ← Back to Love Page
-      </Link>
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-pink-200 to-pink-400 font-serif">
 
-      {/* Title */}
-      <h1 className="text-4xl md:text-5xl font-serif font-semibold text-center text-gray-900 mb-12">
-        {story.title}
-      </h1>
-
-      {/* Card */}
-      <div className="max-w-6xl mx-auto bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12">
-        <div className="flex flex-col md:flex-row gap-12 items-center">
-          {/* Image */}
-          <div className="w-full md:w-1/2 flex justify-center">
-            <img
-              src={story.image}
-              alt={story.title}
-              className="max-h-[75vh] rounded-2xl shadow-lg object-contain"
-            />
-          </div>
-
-          {/* Text */}
-          <div className="w-full md:w-1/2 text-gray-800 text-lg leading-relaxed font-serif">
-            <p className="whitespace-pre-line">
-              {story.text}
-            </p>
-          </div>
-        </div>
+      {/* 🔝 TOP RIGHT LINKS */}
+      <div className="fixed top-16 right-10 z-50 flex gap-3">
+        <Link
+          to="/"
+          className="px-5 py-2 rounded-full bg-white/60 backdrop-blur text-sm hover:bg-white shadow transition"
+        >
+          Home
+        </Link>
+        <Link
+          to="/memories"
+          className="px-5 py-2 rounded-full bg-white/60 backdrop-blur text-sm hover:bg-white shadow transition"
+        >
+          Memories
+        </Link>
       </div>
 
-      {/* Navigation */}
-      <div className="max-w-6xl mx-auto mt-12 flex justify-between items-center gap-4">
-        {prevStory ? (
-          <button
-            onClick={() => navigate(`/story/${prevStory.id}`)}
-            className="flex flex-col items-start bg-white/80 hover:bg-white px-6 py-4 rounded-2xl shadow-md transition"
-          >
-            <span className="text-xs text-gray-500">← Previous</span>
-            <span className="font-serif text-gray-800">
-              {prevStory.title}
-            </span>
-          </button>
-        ) : (
-          <div />
-        )}
+      {/* 🔁 COUNTER + ARROWS (CIRCULAR) */}
+      <div className="absolute top-20 left-1/2 -translate-x-1/2 flex items-center gap-6 text-gray-800">
+        <button
+          onClick={() => navigate(`/story/${prevStory.id}`)}
+          className="text-2xl hover:scale-125 transition"
+          aria-label="Previous"
+        >
+          ‹
+        </button>
 
-        {nextStory && (
-          <button
-            onClick={() => navigate(`/story/${nextStory.id}`)}
-            className="flex flex-col items-end bg-white/80 hover:bg-white px-6 py-4 rounded-2xl shadow-md transition"
-          >
-            <span className="text-xs text-gray-500">Next →</span>
-            <span className="font-serif text-gray-800">
-              {nextStory.title}
-            </span>
-          </button>
-        )}
-      </div>
-      {/* All memories grid */}
-{/* All memories grid */}
-<div className="max-w-6xl mx-auto mt-20">
-  <h2 className="text-2xl font-serif text-center mb-8 text-gray-800">
-    All Memories
-  </h2>
-
-  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-    {stories.map((s, i) => (
-      <button
-        key={s.id}
-        onClick={() => navigate(`/story/${s.id}`)}
-        className="
-          bg-white/80
-          backdrop-blur
-          rounded-2xl
-          p-4
-          shadow
-          hover:shadow-xl
-          hover:scale-[1.03]
-          transition
-          text-sm
-          text-gray-800
-          font-serif
-          focus:outline-none
-          focus:ring-2
-          focus:ring-pink-400
-        "
-      >
-        <div className="font-medium">
-          {i + 1}. {s.title}
-        </div>
-      </button>
-    ))}
-  </div>
+        <div className="flex items-center gap-2">
+  <span className="text-2xl font-serif">{index + 1} /</span>
+  <span className="text-2xl font-serif">∞</span>
 </div>
 
+        <button
+          onClick={() => navigate(`/story/${nextStory.id}`)}
+          className="text-2xl hover:scale-125 transition"
+          aria-label="Next"
+        >
+          ›
+        </button>
+      </div>
 
+      {/* 🧠 MAIN CONTENT (FIT TO SCREEN) */}
+      <div className="h-full flex flex-col justify-center px-16">
+
+        <h1 className="text-5xl font-bold text-center mb-10 text-gray-900">
+          {story.title}
+        </h1>
+
+        <div
+          className="
+            mx-auto
+            w-full max-w-6xl
+            bg-white/70 backdrop-blur
+            rounded-3xl shadow-xl
+            p-10
+            grid grid-cols-2 gap-12
+            items-center
+          "
+        >
+          <img
+            src={story.image}
+            alt=""
+            className="h-[420px] object-contain mx-auto rounded-2xl shadow-lg"
+          />
+
+          <p className="text-[17px] leading-relaxed text-gray-800">
+            {story.text}
+          </p>
+        </div>
+
+      </div>
     </div>
   )
 }
