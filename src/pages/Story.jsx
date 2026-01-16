@@ -30,7 +30,7 @@ export default function Story() {
         to="/"
         className="inline-block mb-8 text-sm text-gray-800 hover:underline"
       >
-        ← Back to memories
+        ← Back to Love Page
       </Link>
 
       {/* Title */}
