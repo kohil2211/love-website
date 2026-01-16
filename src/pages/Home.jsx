@@ -19,7 +19,7 @@ export default function Home() {
         </h1>
 
         <p className="text-white/90 max-w-xl mx-auto mb-10">
-          This is everything I never said properly, written with patience and love.
+          This is everything I have ever wanted to tell you my love about how I really feel about you. I would for you to check this out.
         </p>
 
         <Link
