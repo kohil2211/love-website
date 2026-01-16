@@ -23,6 +23,7 @@ export default function Story() {
       : null
 
   return (
+    
     <div className="min-h-screen bg-gradient-to-br from-pink-200 via-pink-300 to-pink-400 px-6 py-12">
       {/* Back */}
       <Link
